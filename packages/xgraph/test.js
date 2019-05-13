@@ -140,88 +140,88 @@ test('querying the graph using template strings', t => {
   t.is(a.length, 1);
 });
 
-// qTest(
-//   'multiple hops test',
-//   `(?withFriends)-[:friend]->(:Person)-[visits:visited]->(places)`,
-//   {
-//     withFriends: 1,
-//     visits: 1,
-//     places: 1,
-//   }
-// );
+qTest(
+  'multiple hops test',
+  `(?withFriends)-[:friend]->(:Person)-[visits:visited]->(places)`,
+  {
+    withFriends: 1,
+    visits: 1,
+    places: 1,
+  }
+);
 
-// test('Checking sync across instances', t => {
-//   const { xg } = scenario();
-//   const { a, b } = xg.query`(?a)-[:friend]->(b:Person)`;
-//   const foo1 = a.find(v => v.name === 'Foo');
-//   const foo2 = b.find(v => v.name === 'Foo');
-//   t.isNot(foo1, null);
-//   t.isNot(foo2, null);
-//   foo1.age = 5;
-//   foo1.isMeow = true;
-//   t.is(foo1.age, 5);
-//   foo1.flush();
-//   t.is(foo2.age, 5);
-//   t.is(foo2.isMeow, true);
-// });
+test('Checking sync across instances', t => {
+  const { xg } = scenario();
+  const { a, b } = xg.query`(?a)-[:friend]->(b:Person)`;
+  const foo1 = a.find(v => v.name === 'Foo');
+  const foo2 = b.find(v => v.name === 'Foo');
+  t.isNot(foo1, null);
+  t.isNot(foo2, null);
+  foo1.age = 5;
+  foo1.isMeow = true;
+  t.is(foo1.age, 5);
+  foo1.flush();
+  t.is(foo2.age, 5);
+  t.is(foo2.isMeow, true);
+});
 
-// test('Wrapping around edges', t => {
-//   const { xg } = scenario();
-//   const { friendships } = xg.query`()-[friendships:friend]->()`;
-//   t.is(friendships.length, 2);
-//   const fooToBar = friendships.find(fr => fr.origin.name === 'Foo');
-//   t.is(fooToBar.target.name, 'Bar');
-// });
+test('Wrapping around edges', t => {
+  const { xg } = scenario();
+  const { friendships } = xg.query`()-[friendships:friend]->()`;
+  t.is(friendships.length, 2);
+  const fooToBar = friendships.find(fr => fr.origin.name === 'Foo');
+  t.is(fooToBar.target.name, 'Bar');
+});
 
-// test('Backtrace property', t => {
-//   const { xg } = scenario();
-//   const {
-//     v: [foo],
-//   } = xg.query`(v:Person{name:"Foo"})`;
-//   const [home] = foo.$.visited.get();
-//   t.truthy(home.$backtrace.at);
-// });
+test('Backtrace property', t => {
+  const { xg } = scenario();
+  const {
+    v: [foo],
+  } = xg.query`(v:Person{name:"Foo"})`;
+  const [home] = foo.$.visited.get();
+  t.truthy(home.$backtrace.at);
+});
 
-// test('Auto rollback of ref', t => {
-//   const { xg, person } = scenario();
-//   xg.withTx(() => {
-//     const p = person({ name: 'Test' });
-//     throw new Error();
-//   });
-//   const { results } = xg.query`(results:Person{name:"Test"})`;
-//   t.is(results.length, 0);
-// });
+test('Auto rollback of ref', t => {
+  const { xg, person } = scenario();
+  xg.withTx(() => {
+    const p = person({ name: 'Test' });
+    throw new Error();
+  });
+  const { results } = xg.query`(results:Person{name:"Test"})`;
+  t.is(results.length, 0);
+});
 
-// test('Query a model type', t => {
-//   const { person } = scenario();
-//   const results = person.find({
-//     name: {
-//       $size: 3,
-//     },
-//   });
-//   t.is(results.length, 2);
-//   t.is(person.find().length, 3);
-// });
+test('Query a model type', t => {
+  const { person } = scenario();
+  const results = person.find({
+    name: {
+      $size: 3,
+    },
+  });
+  t.is(results.length, 2);
+  t.is(person.find().length, 3);
+});
 
-// test('Check connection', t => {
-//   const { person } = scenario();
-//   const [foo, bar] = person.find({ name: { $not: 'Spam' } });
-//   t.is(foo.$.friend.has(bar), true);
-// });
+test('Check connection', t => {
+  const { person } = scenario();
+  const [foo, bar] = person.find({ name: { $not: 'Spam' } });
+  t.is(foo.$.friend.has(bar), true);
+});
 
-// test('Singular connection', t => {
-//   const { person } = scenario();
-//   const [bar] = person.find({ name: 'Bar' });
-//   const pt = bar._.livesIn;
-//   t.is(pt.type, 'Place');
-//   delete bar._.livesIn;
-//   t.is(bar._.livesIn, null);
-//   delete bar._.livesIn;
-//   t.is(bar._.livesIn, null);
-// });
+test('Singular connection', t => {
+  const { person } = scenario();
+  const [bar] = person.find({ name: 'Bar' });
+  const pt = bar._.livesIn;
+  t.is(pt.type, 'Place');
+  delete bar._.livesIn;
+  t.is(bar._.livesIn, null);
+  delete bar._.livesIn;
+  t.is(bar._.livesIn, null);
+});
 
-// test('model proto', t => {
-//   const { person } = scenario();
-//   const [bar] = person.find({ name: 'Bar' });
-//   t.is(bar.likeCount, 1);
-// });
+test('model proto', t => {
+  const { person } = scenario();
+  const [bar] = person.find({ name: 'Bar' });
+  t.is(bar.likeCount, 1);
+});
