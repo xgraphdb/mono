@@ -21,12 +21,18 @@ module.exports = function parseVertexString(vertexString, state) {
       type = null;
     }
     let delayed = false;
+    let isRef = false;
     if (vName.startsWith('?')) {
       delayed = true;
       vName = vName.substr(1);
     }
+    if (vName.startsWith('&')) {
+      isRef = true;
+      vName = vName.substr(1);
+    }
     Object.assign(node, {
       delayed,
+      isRef,
       varName: vName || null,
     });
     if (vid) {

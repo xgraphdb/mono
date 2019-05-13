@@ -7,6 +7,7 @@ module.exports = function computeVertexStep(
   step,
   setDelayedExecutionCallback
 ) {
+  if (step.isRef) return results[step.varName];
   if (!curr) {
     curr = step.vid
       ? [graph.vertex(step.vid)].filter(Boolean)

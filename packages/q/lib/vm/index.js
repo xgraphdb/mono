@@ -19,11 +19,10 @@ function createReducer(graph, results) {
       : computeEdgeStep(graph, results, curr, step, delayedExecutionCallback);
 }
 
-module.exports = function run(graph, steps, debug = false) {
-  const results = {};
+module.exports = function run(graph, steps, state = {}, debug = false) {
   if (debug) {
-    results._steps = steps;
+    state._steps = steps;
   }
-  steps.reduce(createReducer(graph, results), null);
-  return results;
+  steps.reduce(createReducer(graph, state), null);
+  return state;
 };

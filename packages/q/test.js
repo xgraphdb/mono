@@ -15,6 +15,7 @@ test.beforeEach(t => {
   g.setEdge('bar', 'cat', 'likes-a');
   g.setEdge('cat', 'bar', 'hates', { reason: 'meow' });
   g.setEdge('foo', 'home', 'visited', { at: Date.now() });
+  g.setEdge('bar', 'home', 'visited', { at: Date.now() });
   g.setEdge('bar', 'pt', 'lives-in', { at: Date.now() });
   t.context.g = g;
 });
@@ -44,12 +45,12 @@ test('advanced filtered query', t => {
 
 test('match against edges', t => {
   const { e: results } = q(t.context.g)`(:Person)-[e]->`;
-  t.is(results.length, 6);
+  t.is(results.length, 7);
 });
 
 test('match against edges with type', t => {
   const { e: results } = q(t.context.g)`(:Person)-[e:visited]->`;
-  t.is(results.length, 1);
+  t.is(results.length, 2);
   const [{ origin }] = results;
   t.is(origin.name, 'foo');
 });
@@ -58,7 +59,7 @@ test('match against edges, filtered', t => {
   const { e: results } = q(t.context.g)`
   (:Person)-[e${({ properties }) => properties.at}]->
   `;
-  t.is(results.length, 2);
+  t.is(results.length, 3);
 });
 
 test('match against full path', t => {
@@ -83,7 +84,7 @@ test('misc queries', t => {
   const { visitors, visits } = q(g)`
     (:Place)<-[visits:visited]-(visitors:Person{name:"foo"})
   `;
-  t.is(visits.length, 1);
+  t.is(visits.length, 2);
   t.is(visitors.length, 1);
   const [foo] = visitors;
   t.is(foo.name, 'foo');
@@ -376,3 +377,23 @@ testQueryLength(
 );
 
 testQueryLength('Failed xgraph query', `()-[:friend]->(results)`, 2);
+
+test('Multiple queries', t => {
+  const { p, f } = q(t.context.g)`
+    (p:Person);
+    (f:Person{name:"foo"});
+  `;
+  t.is(p.length, 2);
+  t.is(f.length, 1);
+});
+
+test('Multiple queries with state', t => {
+  const { visitors, visits } = q(t.context.g)`
+    (visitors:Person{name:"foo"});
+    (:Place)<-[visits:visited]-(&visitors);
+  `;
+  t.is(visits.length, 2);
+  t.is(visitors.length, 1);
+  const [foo] = visitors;
+  t.is(foo.name, 'foo');
+});

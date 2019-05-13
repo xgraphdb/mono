@@ -7,6 +7,7 @@ module.exports = function computeEdgeStep(
   step,
   callDelayedExecutionCallback
 ) {
+  if (step.isRef) return results[step.varName];
   curr = curr.map(v =>
     step.out ? graph.outEdges(v[Graph.ID]) : graph.inEdges(v[Graph.ID])
   );
