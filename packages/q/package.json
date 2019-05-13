@@ -1,6 +1,6 @@
 {
   "name": "@xgraph/q",
-  "version": "1.2.3",
+  "version": "4.0.0",
   "description": "Query @xgraph/core graphs",
   "main": "index.js",
   "repository": "git@github.com:oakfang/graph-q.git",
@@ -10,7 +10,7 @@
     "@xgraph/core": "^3.0.0"
   },
   "devDependencies": {
-    "@xgraph/core": "^3.0.0",
+    "@xgraph/core": "^4.0.0",
     "nefarious": "^3.1.0",
     "nyc": "^13.2.0"
   },
