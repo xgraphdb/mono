@@ -1,0 +1,24 @@
+{
+  "name": "xgraphdb",
+  "version": "0.0.1",
+  "description": "Monorepo for the XGraph DB",
+  "main": "index.js",
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "test": "lerna run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xgraphdb/mono.git"
+  },
+  "author": "Alon Niv",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xgraphdb/mono/issues"
+  },
+  "homepage": "https://github.com/xgraphdb/mono#readme",
+  "devDependencies": {
+    "lerna": "^3.13.4",
+    "lerna-wizard": "^1.0.9"
+  }
+}
