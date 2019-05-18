@@ -16,8 +16,6 @@
   },
   "dependencies": {
     "@xgraph/parser": "^4.2.0",
-    "acorn": "^6.1.0",
-    "json-predicate": "^0.9.5",
     "monjo": "^1.0.0",
     "xype": "^4.0.0"
   },
