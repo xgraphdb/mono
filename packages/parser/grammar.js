@@ -25,11 +25,12 @@ const lexer = moo.compile({
     true: 'true',
     false: 'false',
     null: 'null',
+    stateFilterPrefix: /\$\$[0-9]+f/,
+    jsIdentifier: /[a-zA-Z_$0-9]+(?:-+[a-zA-Z_$0-9]+)*/,
     identifier: /[a-zA-Z]\w*/,
-    vertexOp: /[#:]/,
+    vertexOp: /[#]/,
     edgeOp: /[:]/,
     vertexNamePrefix: /[?&]/,
-    stateFilterPrefix: /\$\$[0-9]+/,
 });
 
 
@@ -173,24 +174,29 @@ var grammar = {
           type: 'vertex',
           ...extractProps(d.slice(2)),
         })},
-    {"name": "filterer", "symbols": [{"literal":"{"}, "_", (lexer.has("stateFilterPrefix") ? {type: "stateFilterPrefix"} : stateFilterPrefix), "identifier", "_", {"literal":"}"}], "postprocess": ([,,, filter]) => ({filter})},
+    {"name": "filterer", "symbols": [{"literal":"{"}, "_", (lexer.has("stateFilterPrefix") ? {type: "stateFilterPrefix"} : stateFilterPrefix), "number", "_", {"literal":"}"}], "postprocess": ([,,, filter]) => ({filter})},
     {"name": "filterer", "symbols": ["json"], "postprocess": ([{value:filter}]) => ({ filter })},
-    {"name": "subfilter", "symbols": [/[#:]/, "identifier"], "postprocess": 
-        ([prefix, value]) => prefix.value === ':' ? {
-          vtype: value,
-        } : {
+    {"name": "subfilter", "symbols": ["vertexIdFilter"]},
+    {"name": "subfilter", "symbols": ["vertexTypeFilter"]},
+    {"name": "vertexIdFilter", "symbols": [/[#]/, "ident"], "postprocess": 
+        ([, value]) => ({
           vid: value,
-        }
-        },
-    {"name": "edgeSubfilter", "symbols": [/[:]/, "identifier"], "postprocess": 
-        ([prefix, value]) => ({
-          etype: value,
+        })
+                          },
+    {"name": "vertexTypeFilter", "symbols": [/[:]/, "ident"], "postprocess": 
+        ([, value]) => ({
+          vtype: value,
         })
         },
+    {"name": "edgeSubfilter", "symbols": [/[:]/, "ident"], "postprocess": 
+        ([, value]) => ({
+          etype: value,
+        })
+                          },
     {"name": "nodeName$ebnf$1$subexpression$1", "symbols": [/[?&]/]},
     {"name": "nodeName$ebnf$1", "symbols": ["nodeName$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "nodeName$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "nodeName", "symbols": ["nodeName$ebnf$1", "identifier"], "postprocess": ([prefix ,varName]) => {
+    {"name": "nodeName", "symbols": ["nodeName$ebnf$1", "ident"], "postprocess": ([prefix ,varName]) => {
           const node = { varName };
           if (prefix) {
             const [token] = prefix;
@@ -198,7 +204,10 @@ var grammar = {
           }
           return node;
         }},
+    {"name": "ident", "symbols": ["identifier"]},
+    {"name": "ident", "symbols": ["jsIdentifier"], "postprocess": id},
     {"name": "identifier", "symbols": [(lexer.has("identifier") ? {type: "identifier"} : identifier)], "postprocess": ([{value}]) => value},
+    {"name": "jsIdentifier", "symbols": [(lexer.has("jsIdentifier") ? {type: "jsIdentifier"} : jsIdentifier)], "postprocess": ([{value}]) => value},
     {"name": "json$subexpression$1", "symbols": ["object"]},
     {"name": "json", "symbols": ["_", "json$subexpression$1", "_"], "postprocess": function(d) { return { type: 'object', value: d[1][0] }; }},
     {"name": "object", "symbols": [{"literal":"{"}, "_", {"literal":"}"}], "postprocess": function(d) { return {}; }},
@@ -220,9 +229,18 @@ var grammar = {
     {"name": "value", "symbols": [{"literal":"null"}], "postprocess": function(d) { return null; }},
     {"name": "number", "symbols": [(lexer.has("number") ? {type: "number"} : number)], "postprocess": function(d) { return parseFloat(d[0].value) }},
     {"name": "string", "symbols": [(lexer.has("dstring") ? {type: "dstring"} : dstring)], "postprocess": function(d) { return JSON.parse(d[0].value) }},
-    {"name": "string", "symbols": [(lexer.has("sstring") ? {type: "sstring"} : sstring)], "postprocess": function(d) { return JSON.parse(d[0].value.replace(/^'|'$/, '"')) }},
+    {"name": "string", "symbols": [(lexer.has("sstring") ? {type: "sstring"} : sstring)], "postprocess":  function(d) { 
+         try {
+           const value = d[0].value.replace(/^'|'$/g, '"');
+           return JSON.parse(value)
+         } catch (err) {
+           console.log(d);
+           throw err;
+         }
+        } },
     {"name": "pair", "symbols": ["key", "_", {"literal":":"}, "_", "value"], "postprocess": function(d) { return [d[0], d[4]]; }},
     {"name": "key", "symbols": ["string"], "postprocess": id},
+    {"name": "key", "symbols": ["jsIdentifier"], "postprocess": id},
     {"name": "key", "symbols": ["identifier"], "postprocess": id},
     {"name": "_", "symbols": []},
     {"name": "_", "symbols": [(lexer.has("space") ? {type: "space"} : space)], "postprocess": function(d) { return null; }},

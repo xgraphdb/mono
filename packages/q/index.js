@@ -1,12 +1,12 @@
-const { getQStringAndState, parse, run, raw } = require('./lib');
+const parse = require('@xgraph/parser');
+const { getQStringAndState, run, raw } = require('./lib');
 
 function q(graph, query, debug) {
   const qRun = (stringFrags, ...values) => {
     const { qString, state } = getQStringAndState(stringFrags, values);
-    const queries = qString.split(';').filter(Boolean);
+    const queries = parse(qString);
     return queries.reduce((results, query) => {
-      const steps = parse(query, state);
-      return run(graph, steps, results, debug);
+      return run(graph, query, state, results, debug);
     }, {});
   };
   return query ? qRun([query]) : qRun;

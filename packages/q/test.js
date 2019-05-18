@@ -139,8 +139,13 @@ test('long query', t => {
 test('insecure query', t => {
   const { g } = t.context;
   t.throws(() => {
-    q(g)`({name: (() => {throw new Error("Why does this throw?")})()})`;
-  }, 'Invalid node filter syntax');
+    const { _steps } = q(
+      g,
+      `({name: (() => {throw new Error("Why does this throw?")})()})`,
+      true
+    );
+    console.log(_steps);
+  });
 });
 
 test('weird id', t => {

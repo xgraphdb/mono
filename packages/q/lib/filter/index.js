@@ -1,22 +1,16 @@
 const compileFilter = require('monjo');
-const { PREFIX } = require('../consts');
-const evaluateFilter = require('./evaluate')
-
-const filterPattern = /(\{.*\})$/;
 
 function getFilter(filter, state, expand) {
   if (!filter) return null;
-  if (filter.startsWith(`{${PREFIX}`)) {
-    const key = filter.substring(1, filter.length - 1);
-    return state[key];
+  if (typeof filter === 'number') {
+    return state[filter];
   }
-  let filterObject = evaluateFilter(`(${filter})`);
   if (expand) {
-    filterObject = {
-      [expand]: filterObject,
+    filter = {
+      [expand]: filter,
     };
   }
-  return compileFilter(filterObject);
+  return compileFilter(filter);
 }
 
-module.exports = { filterPattern, getFilter };
+module.exports = getFilter;

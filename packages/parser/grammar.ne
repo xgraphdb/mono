@@ -21,11 +21,12 @@ const lexer = moo.compile({
     true: 'true',
     false: 'false',
     null: 'null',
+    stateFilterPrefix: /\$\$[0-9]+f/,
+    jsIdentifier: /[a-zA-Z_$0-9]+(?:-+[a-zA-Z_$0-9]+)*/,
     identifier: /[a-zA-Z]\w*/,
-    vertexOp: /[#:]/,
+    vertexOp: /[#]/,
     edgeOp: /[:]/,
     vertexNamePrefix: /[?&]/,
-    stateFilterPrefix: /\$\$[0-9]+/,
 });
 %}
 
@@ -87,24 +88,30 @@ vertex -> "(" _ ")" {%() => ({ type: 'vertex' })%}
           ...extractProps(d.slice(2)),
         })%}
 
-filterer -> "{" _ %stateFilterPrefix identifier _ "}" {% ([,,, filter]) => ({filter}) %}
+filterer -> "{" _ %stateFilterPrefix number _ "}" {% ([,,, filter]) => ({filter}) %}
              | json {%([{value:filter}]) => ({ filter })%}
 
-subfilter -> [#:] identifier {%
-  ([prefix, value]) => prefix.value === ':' ? {
-    vtype: value,
-  } : {
-    vid: value,
-  }
-%}
+subfilter -> vertexIdFilter | vertexTypeFilter
 
-edgeSubfilter -> [:] identifier {%
-  ([prefix, value]) => ({
-    etype: value,
+vertexIdFilter -> [#] ident {%
+                    ([, value]) => ({
+                      vid: value,
+                    })
+                  %}
+                  
+vertexTypeFilter -> [:] ident {%
+  ([, value]) => ({
+    vtype: value,
   })
 %}
 
-nodeName -> ([?&]):? identifier {%([prefix ,varName]) => {
+edgeSubfilter ->  [:] ident {%
+                    ([, value]) => ({
+                      etype: value,
+                    })
+                  %}
+
+nodeName -> ([?&]):? ident {%([prefix ,varName]) => {
   const node = { varName };
   if (prefix) {
     const [token] = prefix;
@@ -113,7 +120,11 @@ nodeName -> ([?&]):? identifier {%([prefix ,varName]) => {
   return node;
 }%}
 
+ident -> identifier | jsIdentifier {% id %}
+
 identifier -> %identifier {% ([{value}]) => value %}
+
+jsIdentifier -> %jsIdentifier {% ([{value}]) => value %}
 
 json -> _ (object) _ {% function(d) { return { type: 'object', value: d[1][0] }; } %}
 
@@ -135,11 +146,15 @@ value ->
 number -> %number {% function(d) { return parseFloat(d[0].value) } %}
 
 string -> %dstring {% function(d) { return JSON.parse(d[0].value) } %}
-        | %sstring {% function(d) { return JSON.parse(d[0].value.replace(/^'|'$/, '"')) } %}
+        | %sstring {% function(d) { 
+            const value = d[0].value.replace(/^'|'$/g, '"');
+            return JSON.parse(value)
+         } %}
 
 pair -> key _ ":" _ value {% function(d) { return [d[0], d[4]]; } %}
 
 key -> string {% id %}
+     | jsIdentifier {% id %}
      | identifier {% id %}
 
 _ -> null | %space {% function(d) { return null; } %}

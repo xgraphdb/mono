@@ -8,8 +8,8 @@ module.exports = function getQStringAndState(stringFrags, values) {
     .reduce((str, frg, idx) => {
       let value = values[idx - 1];
       if (typeof value === 'function') {
-        const v = PREFIX + idx;
-        state[v] = value;
+        const v = PREFIX + 'f' + idx;
+        state[idx] = value;
         value = `{${v}}`;
       } else {
         value = isRaw(value) ? value.value : JSON.stringify(value);

@@ -1,7 +1,9 @@
 const Graph = require('@xgraph/core');
+const compileFilter = require('../../filter')
 
 module.exports = function computeVertexStep(
   graph,
+  state,
   results,
   curr,
   step,
@@ -26,7 +28,7 @@ module.exports = function computeVertexStep(
     });
   }
   if (step.filter) {
-    curr = curr.filter(step.filter);
+    curr = curr.filter(compileFilter(step.filter, state));
   }
   if (step.varName) {
     if (step.delayed) {

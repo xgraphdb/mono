@@ -1,7 +1,9 @@
 const Graph = require('@xgraph/core');
+const compileFilter = require('../../filter');
 
 module.exports = function computeEdgeStep(
   graph,
+  state,
   results,
   curr,
   step,
@@ -20,7 +22,7 @@ module.exports = function computeEdgeStep(
     curr = curr.filter(e => e.type === step.etype);
   }
   if (step.filter) {
-    curr = curr.filter(step.filter);
+    curr = curr.filter(compileFilter(step.filter, state, 'properties'));
   }
   if (callDelayedExecutionCallback) {
     curr = Array.from(curr);

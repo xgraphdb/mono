@@ -34,10 +34,10 @@ test('Vertex', t => {
       value: [{ type: 'vertex', varName: 'foo', filter: { name: 'Hello' } }],
     },
   ]);
-  t.deepEquals(parse(`(foo{$$454Foo})`), [
+  t.deepEquals(parse(`(foo{$$454f33})`), [
     {
       type: 'query',
-      value: [{ type: 'vertex', varName: 'foo', filter: 'Foo' }],
+      value: [{ type: 'vertex', varName: 'foo', filter: 33 }],
     },
   ]);
 });
@@ -51,6 +51,12 @@ test('Edge', t => {
         { type: 'edge', out: true },
         { type: 'vertex' },
       ],
+    },
+  ]);
+  t.deepEquals(parse(`()-[:has-a]->`), [
+    {
+      type: 'query',
+      value: [{ type: 'vertex' }, { type: 'edge', out: true, etype: 'has-a' }],
     },
   ]);
   t.deepEquals(parse(`(foo{name:"Hello"})-->`), [
@@ -82,12 +88,12 @@ test('Edge', t => {
       ],
     },
   ]);
-  t.deepEquals(parse(`()-[foo{$$3Meow}]->()`), [
+  t.deepEquals(parse(`()-[foo{$$3f1}]->()`), [
     {
       type: 'query',
       value: [
         { type: 'vertex' },
-        { type: 'edge', varName: 'foo', out: true, filter: 'Meow' },
+        { type: 'edge', varName: 'foo', out: true, filter: 1 },
         { type: 'vertex' },
       ],
     },
@@ -132,12 +138,12 @@ test('Edge', t => {
       ],
     },
   ]);
-  t.deepEquals(parse(`()<-[foo{$$3Meow}]-()`), [
+  t.deepEquals(parse(`()<-[foo{$$3f4}]-()`), [
     {
       type: 'query',
       value: [
         { type: 'vertex' },
-        { type: 'edge', varName: 'foo', out: false, filter: 'Meow' },
+        { type: 'edge', varName: 'foo', out: false, filter: 4 },
         { type: 'vertex' },
       ],
     },
