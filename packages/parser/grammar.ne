@@ -24,7 +24,7 @@ const lexer = moo.compile({
     createVertex: /(?:CREATE\s+VERTEX)|(?:create\s+vertex)/,
     createEdge: /(?:CREATE\s+EDGE)|(?:create\s+edge)/,
     update: /(?:(?:UPDATE)|(?:update))\s/,
-    del: /(?:(?:DELETE)|(?:del))\s/,
+    del: /(?:(?:DELETE)|(?:delete))\s/,
     as_: /(?:(?:AS)|(?:as))\s/,
     from_: /(?:(?:FROM)|(?:from))\s/,
     to_: /(?:(?:TO)|(?:to))\s/,
@@ -42,8 +42,7 @@ const lexer = moo.compile({
 script -> _ command (_ term _ command):* (term):? _ {% extractScript %}
 
 command -> query
-         | createVertexStatement
-         | createEdgeStatement
+         | createEntity
          | updateFragment
          | deleteEntity
 
@@ -57,6 +56,8 @@ deleteEntity -> %del _ ident {% ([,, varName]) => ({
   type: 'delete',
   varName,
 }) %}
+
+createEntity -> createVertexStatement | createEdgeStatement
 
 createVertexStatement -> %createVertex %space ident _ json (alias):? {%
                             ([,, type,, props, alias]) => ({

@@ -1,7 +1,9 @@
 const query = require('./query');
 const create = require('./create');
+const update = require('./update');
+const delete_ = require('./delete');
 
-const commands = { query, create };
+const commands = { query, create, update, delete: delete_ };
 
 module.exports = function run(
   graph,

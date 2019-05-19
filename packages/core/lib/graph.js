@@ -84,6 +84,7 @@ class Graph {
   }
 
   vertex(id) {
+    if (id[ID]) return id;
     return this._vertices.get(id);
   }
 

@@ -429,3 +429,51 @@ test('Create edge', t => {
   `;
   t.is(friendships.length, 2);
 });
+
+testQueryLength(
+  'Update vertex',
+  `
+  (foo#foo);
+  update foo {
+    name: "bar"
+  };
+  (results:Person{
+    name: 'bar'
+  })
+`,
+  2
+);
+
+testQueryLength(
+  'Update edges',
+  `
+  ()-[friendships:friend]->;
+  update friendships {
+    mutual: true
+  };
+  ()-[results:friend{mutual:true}]->;
+`,
+  2
+);
+
+testQueryLength(
+  'Delete vertex',
+  `
+  (foo#foo);
+  delete foo;
+  (results:Person{
+    name: 'foo'
+  })
+`,
+  0
+);
+
+testQueryLength(
+  'Delete edges',
+  `
+  ()-[friendships:friend]->;
+  delete friendships;
+  ()-[results:friend]->;
+`,
+  0
+);
