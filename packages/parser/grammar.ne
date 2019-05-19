@@ -22,7 +22,10 @@ const lexer = moo.compile({
     false: 'false',
     null: 'null',
     createVertex: /(?:CREATE\s+VERTEX)|(?:create\s+vertex)/,
+    createEdge: /(?:CREATE\s+EDGE)|(?:create\s+edge)/,
     as_: /(?:(?:AS)|(?:as))\s/,
+    from_: /(?:(?:FROM)|(?:from))\s/,
+    to_: /(?:(?:TO)|(?:to))\s/,
     stateFilterPrefix: /\$\$[0-9]+f/,
     jsIdentifier: /[a-zA-Z_$0-9]+(?:-+[a-zA-Z_$0-9]+)*/,
     identifier: /[a-zA-Z]\w*/,
@@ -36,7 +39,7 @@ const lexer = moo.compile({
 
 script -> _ command (_ term _ command):* (term):? _ {% extractScript %}
 
-command -> query | createVertexStatement
+command -> query | createVertexStatement | createEdgeStatement
 
 createVertexStatement -> %createVertex %space ident _ json (alias):? {%
                             ([,, type,, props, alias]) => ({
@@ -50,7 +53,25 @@ createVertexStatement -> %createVertex %space ident _ json (alias):? {%
                             })
                           %}
 
-alias -> %space _ %as_ _ ident {% d => d.pop() %}
+createEdgeStatement -> %createEdge %space ident _ (json _):? %from_ ident _ %to_ ident (alias):? {%
+                            ([,,etype,,props,,from_,,,to_, alias]) => {
+                              props = props && props[0].value;
+                              alias = alias && alias[0];
+                              return {
+                                type: 'create',
+                                entityType: 'edge',
+                                payload: {
+                                  etype,
+                                  properties: props,
+                                  sourceVar: from_,
+                                  targetVar: to_,
+                                },
+                                varName: alias
+                              }
+                            }
+                          %}
+
+alias -> %space %as_ _ ident {% d => d.pop() %}
 
 query -> vertex (_ edge (_ vertex):?):* {% extractQuery %}
 

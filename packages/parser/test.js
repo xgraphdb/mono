@@ -208,3 +208,45 @@ test('Create vertex', t => {
     },
   ]);
 });
+
+test('Create edge', t => {
+  t.deepEquals(parse(`create edge friend from foo to bar`), [
+    {
+      type: 'create',
+      entityType: 'edge',
+      payload: {
+        etype: 'friend',
+        properties: null,
+        sourceVar: 'foo',
+        targetVar: 'bar',
+      },
+      varName: null,
+    },
+  ]);
+  t.deepEquals(parse(`create edge friend {foo: false} from foo to bar`), [
+    {
+      type: 'create',
+      entityType: 'edge',
+      payload: {
+        etype: 'friend',
+        properties: { foo: false },
+        sourceVar: 'foo',
+        targetVar: 'bar',
+      },
+      varName: null,
+    },
+  ]);
+  t.deepEquals(parse(`create edge friend from foo to bar as friendship`), [
+    {
+      type: 'create',
+      entityType: 'edge',
+      payload: {
+        etype: 'friend',
+        properties: null,
+        sourceVar: 'foo',
+        targetVar: 'bar',
+      },
+      varName: 'friendship',
+    },
+  ]);
+});
