@@ -1,3 +1,5 @@
+const uuid = require('uuid');
+const q = require('@xgraph/q');
 const BaseGraph = require('./lib/base');
 
 function getBoundObject(ctx, proto) {
@@ -14,6 +16,11 @@ function getBoundObject(ctx, proto) {
 }
 
 module.exports = class XGraph extends BaseGraph {
+  constructor(...args) {
+    super(...args);
+    this._protos = {};
+  }
+
   _getSingleEdgesProxy(vid) {
     return new Proxy(
       {},
@@ -137,5 +144,56 @@ module.exports = class XGraph extends BaseGraph {
       bound = getBoundObject(instance, proto);
     }
     return instance;
+  }
+
+  _wrapVertex(id, edgeProps) {
+    return this._wrapVertexInstance(this._graph.vertex(id), edgeProps);
+  }
+
+  createModelType(type, proto) {
+    this._protos[type] = proto;
+    const create = props => {
+      const id = uuid();
+      this.withTx(() => {
+        this._graph.setVertex(id, type, props);
+      });
+      return this._wrapVertex(id);
+    };
+    create.findById = id => {
+      if (this._graph.hasVertex(id)) {
+        return this._wrapVertex(id);
+      }
+    };
+    create.find = query => {
+      if (!query) {
+        return Array.from(
+          this._graph.vertices(type).map(v => this._wrapVertexInstance(v))
+        );
+      }
+      const { results } = this.query`(results:${q.raw(type)}${query})`;
+      return results;
+    };
+    return create;
+  }
+
+  query(...args) {
+    const results = BaseGraph.prototype.query.apply(this, args);
+    const wrap = this._wrapVertexInstance.bind(this);
+    return Object.keys(results).reduce((final, vName) => {
+      final[vName] = results[vName].map(result =>
+        result.id
+          ? wrap(result)
+          : {
+              ...result,
+              get origin() {
+                return wrap(result.origin, result.properties);
+              },
+              get target() {
+                return wrap(result.target, result.properties);
+              },
+            }
+      );
+      return final;
+    }, {});
   }
 };
