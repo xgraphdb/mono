@@ -21,6 +21,8 @@ const lexer = moo.compile({
     true: 'true',
     false: 'false',
     null: 'null',
+    createVertex: /(?:CREATE\s+VERTEX)|(?:create\s+vertex)/,
+    as_: /(?:(?:AS)|(?:as))\s/,
     stateFilterPrefix: /\$\$[0-9]+f/,
     jsIdentifier: /[a-zA-Z_$0-9]+(?:-+[a-zA-Z_$0-9]+)*/,
     identifier: /[a-zA-Z]\w*/,
@@ -34,7 +36,21 @@ const lexer = moo.compile({
 
 script -> _ command (_ term _ command):* (term):? _ {% extractScript %}
 
-command -> query
+command -> query | createVertexStatement
+
+createVertexStatement -> %createVertex %space ident _ json (alias):? {%
+                            ([,, type,, props, alias]) => ({
+                              type: 'create',
+                              entityType: 'vertex',
+                              payload: {
+                                vtype: type,
+                                properties: props.value
+                              },
+                              varName: alias ? alias[0] : null
+                            })
+                          %}
+
+alias -> %space _ %as_ _ ident {% d => d.pop() %}
 
 query -> vertex (_ edge (_ vertex):?):* {% extractQuery %}
 

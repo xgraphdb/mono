@@ -179,3 +179,32 @@ test('Multiple queries', t => {
     ]
   );
 });
+
+test('Create vertex', t => {
+  t.deepEquals(parse('create vertex Person {name: "foo"}'), [
+    {
+      type: 'create',
+      entityType: 'vertex',
+      payload: {
+        vtype: 'Person',
+        properties: {
+          name: 'foo',
+        },
+      },
+      varName: null,
+    },
+  ]);
+  t.deepEquals(parse(`create vertex Person {name: "foo"} as foo`), [
+    {
+      type: 'create',
+      entityType: 'vertex',
+      payload: {
+        vtype: 'Person',
+        properties: {
+          name: 'foo',
+        },
+      },
+      varName: 'foo',
+    },
+  ]);
+});

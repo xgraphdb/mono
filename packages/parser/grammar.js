@@ -25,6 +25,8 @@ const lexer = moo.compile({
     true: 'true',
     false: 'false',
     null: 'null',
+    createVertex: /(?:CREATE\s+VERTEX)|(?:create\s+vertex)/,
+    as_: /(?:(?:AS)|(?:as))\s/,
     stateFilterPrefix: /\$\$[0-9]+f/,
     jsIdentifier: /[a-zA-Z_$0-9]+(?:-+[a-zA-Z_$0-9]+)*/,
     identifier: /[a-zA-Z]\w*/,
@@ -89,6 +91,22 @@ var grammar = {
     {"name": "script$ebnf$2", "symbols": [], "postprocess": function(d) {return null;}},
     {"name": "script", "symbols": ["_", "command", "script$ebnf$1", "script$ebnf$2", "_"], "postprocess": extractScript},
     {"name": "command", "symbols": ["query"]},
+    {"name": "command", "symbols": ["createVertexStatement"]},
+    {"name": "createVertexStatement$ebnf$1$subexpression$1", "symbols": ["alias"]},
+    {"name": "createVertexStatement$ebnf$1", "symbols": ["createVertexStatement$ebnf$1$subexpression$1"], "postprocess": id},
+    {"name": "createVertexStatement$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
+    {"name": "createVertexStatement", "symbols": [(lexer.has("createVertex") ? {type: "createVertex"} : createVertex), (lexer.has("space") ? {type: "space"} : space), "ident", "_", "json", "createVertexStatement$ebnf$1"], "postprocess": 
+        ([,, type,, props, alias]) => ({
+          type: 'create',
+          entityType: 'vertex',
+          payload: {
+            vtype: type,
+            properties: props.value
+          },
+          varName: alias ? alias[0] : null
+        })
+                                  },
+    {"name": "alias", "symbols": [(lexer.has("space") ? {type: "space"} : space), "_", (lexer.has("as_") ? {type: "as_"} : as_), "_", "ident"], "postprocess": d => d.pop()},
     {"name": "query$ebnf$1", "symbols": []},
     {"name": "query$ebnf$1$subexpression$1$ebnf$1$subexpression$1", "symbols": ["_", "vertex"]},
     {"name": "query$ebnf$1$subexpression$1$ebnf$1", "symbols": ["query$ebnf$1$subexpression$1$ebnf$1$subexpression$1"], "postprocess": id},
@@ -230,13 +248,8 @@ var grammar = {
     {"name": "number", "symbols": [(lexer.has("number") ? {type: "number"} : number)], "postprocess": function(d) { return parseFloat(d[0].value) }},
     {"name": "string", "symbols": [(lexer.has("dstring") ? {type: "dstring"} : dstring)], "postprocess": function(d) { return JSON.parse(d[0].value) }},
     {"name": "string", "symbols": [(lexer.has("sstring") ? {type: "sstring"} : sstring)], "postprocess":  function(d) { 
-         try {
            const value = d[0].value.replace(/^'|'$/g, '"');
            return JSON.parse(value)
-         } catch (err) {
-           console.log(d);
-           throw err;
-         }
         } },
     {"name": "pair", "symbols": ["key", "_", {"literal":":"}, "_", "value"], "postprocess": function(d) { return [d[0], d[4]]; }},
     {"name": "key", "symbols": ["string"], "postprocess": id},
