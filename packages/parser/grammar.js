@@ -28,6 +28,7 @@ const lexer = moo.compile({
     createVertex: /(?:CREATE\s+VERTEX)|(?:create\s+vertex)/,
     createEdge: /(?:CREATE\s+EDGE)|(?:create\s+edge)/,
     update: /(?:(?:UPDATE)|(?:update))\s/,
+    del: /(?:(?:DELETE)|(?:del))\s/,
     as_: /(?:(?:AS)|(?:as))\s/,
     from_: /(?:(?:FROM)|(?:from))\s/,
     to_: /(?:(?:TO)|(?:to))\s/,
@@ -98,10 +99,15 @@ var grammar = {
     {"name": "command", "symbols": ["createVertexStatement"]},
     {"name": "command", "symbols": ["createEdgeStatement"]},
     {"name": "command", "symbols": ["updateFragment"]},
+    {"name": "command", "symbols": ["deleteEntity"]},
     {"name": "updateFragment", "symbols": [(lexer.has("update") ? {type: "update"} : update), "_", "ident", "_", "json"], "postprocess":  ([,, varName,,{ value }]) => ({
           type: 'update',
           varName,
           payload: value,
+        }) },
+    {"name": "deleteEntity", "symbols": [(lexer.has("update") ? {type: "update"} : update), "_", "ident"], "postprocess":  ([,, varName]) => ({
+          type: 'delete',
+          varName,
         }) },
     {"name": "createVertexStatement$ebnf$1$subexpression$1", "symbols": ["alias"]},
     {"name": "createVertexStatement$ebnf$1", "symbols": ["createVertexStatement$ebnf$1$subexpression$1"], "postprocess": id},

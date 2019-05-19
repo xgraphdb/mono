@@ -256,3 +256,9 @@ test('Update frag', t => {
     { type: 'update', varName: 'foo', payload: { age: 20 } },
   ]);
 });
+
+test('Delete', t => {
+  t.deepEquals(parse(`DELETE foo`), [
+    { type: 'delete', varName: 'foo' },
+  ]);
+});
