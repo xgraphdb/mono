@@ -1,31 +1,7 @@
-const { VERTEX } = require('../consts');
-const computeVertexStep = require('./query/vertex');
-const computeEdgeStep = require('./query/edge');
+const query = require('./query');
+const create = require('./create');
 
-function createQueryReducer(graph, state, results) {
-  let delayedExecutionCallback = null;
-  const setDelayedExecutionCallback = cb => {
-    delayedExecutionCallback = cb;
-  };
-  return (curr, step) =>
-    step.type === VERTEX
-      ? computeVertexStep(
-          graph,
-          state,
-          results,
-          curr,
-          step,
-          setDelayedExecutionCallback
-        )
-      : computeEdgeStep(
-          graph,
-          state,
-          results,
-          curr,
-          step,
-          delayedExecutionCallback
-        );
-}
+const commands = { query, create };
 
 module.exports = function run(
   graph,
@@ -34,12 +10,9 @@ module.exports = function run(
   results = {},
   debug = false
 ) {
-  const steps = command.value;
-  if (debug) {
-    results._steps = steps;
-  }
-  if (command.type === 'query') {
-    steps.reduce(createQueryReducer(graph, state, results), null);
+  const commandFn = commands[command.type];
+  if (commandFn) {
+    commandFn(graph, command, state, results, debug);
   }
   return results;
 };

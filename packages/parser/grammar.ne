@@ -53,7 +53,7 @@ updateFragment -> %update _ ident _ json {% ([,, varName,,{ value }]) => ({
   payload: value,
 }) %}
 
-deleteEntity -> %update _ ident {% ([,, varName]) => ({
+deleteEntity -> %del _ ident {% ([,, varName]) => ({
   type: 'delete',
   varName,
 }) %}

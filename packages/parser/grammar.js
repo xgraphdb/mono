@@ -105,7 +105,7 @@ var grammar = {
           varName,
           payload: value,
         }) },
-    {"name": "deleteEntity", "symbols": [(lexer.has("update") ? {type: "update"} : update), "_", "ident"], "postprocess":  ([,, varName]) => ({
+    {"name": "deleteEntity", "symbols": [(lexer.has("del") ? {type: "del"} : del), "_", "ident"], "postprocess":  ([,, varName]) => ({
           type: 'delete',
           varName,
         }) },

@@ -402,3 +402,30 @@ test('Multiple queries with state', t => {
   const [foo] = visitors;
   t.is(foo.name, 'foo');
 });
+
+test('Create vertex basic', t => {
+  const { g } = t.context;
+  q(g)`CREATE VERTEX Person {
+    name: 'Lolol'
+  }`;
+  const { l } = q(g)`(l:Person{name:'Lolol'})`;
+  t.is(l.length, 1);
+});
+
+test('Create vertex named', t => {
+  const { g } = t.context;
+  const { lol } = q(g)`CREATE VERTEX Person {
+    name: 'Lolol'
+  } AS lol`;
+  t.is(lol.length, 1);
+});
+
+test('Create edge', t => {
+  const { g } = t.context;
+  const { friendships } = q(g)`
+  (people:Person);
+  CREATE VERTEX Person { name: 'Lolol' } AS lol;
+  CREATE EDGE friend FROM lol TO people AS friendships;
+  `;
+  t.is(friendships.length, 2);
+});
