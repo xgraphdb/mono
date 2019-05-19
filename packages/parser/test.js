@@ -250,3 +250,9 @@ test('Create edge', t => {
     },
   ]);
 });
+
+test('Update frag', t => {
+  t.deepEquals(parse(`UPDATE foo { age: 20 }`), [
+    { type: 'update', varName: 'foo', payload: { age: 20 } },
+  ]);
+});
