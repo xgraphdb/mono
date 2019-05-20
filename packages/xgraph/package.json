@@ -20,5 +20,8 @@
   },
   "scripts": {
     "test": "nyc node test"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

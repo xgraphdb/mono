@@ -29,5 +29,8 @@
     "nefarious": "^3.1.0",
     "nyc": "^13.2.0"
   },
-  "private": false
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  }
 }

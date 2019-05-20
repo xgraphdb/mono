@@ -17,5 +17,8 @@
   "dependencies": {
     "lzutf8": "^0.5.5",
     "msgpack-lite": "^0.1.26"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
