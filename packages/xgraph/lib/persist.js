@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');
+const msgpack = require('msgpack-lite');
 
 module.exports = class Persister {
   constructor(datapath) {
@@ -18,7 +19,7 @@ module.exports = class Persister {
 
   readJSON() {
     if (!this.exists) return null;
-    return JSON.parse(fs.readFileSync(this.datapath, { encoding: 'utf8' }));
+    return msgpack.decode(fs.readFileSync(this.datapath));
   }
 
   async writeJSON(data) {
@@ -35,7 +36,7 @@ module.exports = class Persister {
       const data = this.lastWriteValue;
       this.lastWriteValue = null;
       return new Promise(resolve =>
-        fs.writeFile(this.datapath, JSON.stringify(data), resolve)
+        fs.writeFile(this.datapath, msgpack.encode(data), resolve)
       );
     })();
   }

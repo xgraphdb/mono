@@ -5,7 +5,7 @@ const lexer = moo.compile({
     space: {match: /\s+/, lineBreaks: true},
     number: /-?(?:[0-9]|[1-9][0-9]+)(?:\.[0-9]+)?(?:[eE][-+]?[0-9]+)?\b/,
     dstring: /"(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/,
-    sstring: /'(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*'/,
+    sstring: /'(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^'\\])*'/,
     '{': '{',
     '}': '}',
     '[': '[',
@@ -206,7 +206,9 @@ string -> %dstring {% function(d) { return JSON.parse(d[0].value) } %}
             return JSON.parse(value)
          } %}
 
-pair -> key _ ":" _ value {% function(d) { return [d[0], d[4]]; } %}
+pair -> key _ ":" _ value {% function(d) {
+  return [d[0], d[4]];
+} %}
 
 key -> string {% id %}
      | jsIdentifier {% id %}

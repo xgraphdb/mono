@@ -9,7 +9,7 @@ const lexer = moo.compile({
     space: {match: /\s+/, lineBreaks: true},
     number: /-?(?:[0-9]|[1-9][0-9]+)(?:\.[0-9]+)?(?:[eE][-+]?[0-9]+)?\b/,
     dstring: /"(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/,
-    sstring: /'(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*'/,
+    sstring: /'(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^'\\])*'/,
     '{': '{',
     '}': '}',
     '[': '[',
@@ -292,7 +292,9 @@ var grammar = {
            const value = d[0].value.replace(/^'|'$/g, '"');
            return JSON.parse(value)
         } },
-    {"name": "pair", "symbols": ["key", "_", {"literal":":"}, "_", "value"], "postprocess": function(d) { return [d[0], d[4]]; }},
+    {"name": "pair", "symbols": ["key", "_", {"literal":":"}, "_", "value"], "postprocess":  function(d) {
+          return [d[0], d[4]];
+        } },
     {"name": "key", "symbols": ["string"], "postprocess": id},
     {"name": "key", "symbols": ["jsIdentifier"], "postprocess": id},
     {"name": "key", "symbols": ["identifier"], "postprocess": id},

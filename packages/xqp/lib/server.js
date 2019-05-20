@@ -60,7 +60,7 @@ function replyToRequests(socket, handler, onError) {
     async request => {
       const { msgId, payload } = request;
       try {
-        const reply = encodeQReply(msgId, await handler(payload));
+        const reply = encodeQReply(msgId, await handler(payload, msgId));
         socket.write(reply);
       } catch (error) {
         socket.write(encodeQError(msgId, error.message));

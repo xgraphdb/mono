@@ -26,24 +26,27 @@ module.exports = class BaseGraph {
 
   withTx(cb) {
     if (this.__graph) {
-      return cb();
+      return cb(this.__resolvers);
     }
     this.__graph = this._graph;
     tx(
       this._graph,
-      ({ graph }) => {
+      ({ graph, commit, rollback }) => {
         this._graph = graph;
-        cb();
+        this.__resolvers = { commit, rollback };
+        cb(this.__resolvers);
       },
       {
         onCommit: () => {
           this._graph = this.__graph;
           this.__graph = null;
+          this.__resolvers = null;
           this._persist();
         },
         onRollback: () => {
           this._graph = this.__graph;
           this.__graph = null;
+          this.__resolvers = null;
         },
       }
     );

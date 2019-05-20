@@ -258,7 +258,58 @@ test('Update frag', t => {
 });
 
 test('Delete', t => {
-  t.deepEquals(parse(`DELETE foo`), [
-    { type: 'delete', varName: 'foo' },
-  ]);
+  t.deepEquals(parse(`DELETE foo`), [{ type: 'delete', varName: 'foo' }]);
+});
+
+test('Multiple variable steps', t => {
+  t.deepEquals(
+    parse(`
+  CREATE VERTEX Person { name: 'foo' } AS foo1;
+  CREATE VERTEX Person { name: 'bar' } AS bar1;
+  CREATE EDGE friend FROM foo1 TO bar1;
+  ()-[friendships:friend]->;
+  `),
+    [
+      {
+        type: 'create',
+        entityType: 'vertex',
+        payload: {
+          vtype: 'Person',
+          properties: {
+            name: 'foo',
+          },
+        },
+        varName: 'foo1',
+      },
+      {
+        type: 'create',
+        entityType: 'vertex',
+        payload: {
+          vtype: 'Person',
+          properties: {
+            name: 'bar',
+          },
+        },
+        varName: 'bar1',
+      },
+      {
+        type: 'create',
+        entityType: 'edge',
+        payload: {
+          etype: 'friend',
+          properties: null,
+          sourceVar: 'foo1',
+          targetVar: 'bar1',
+        },
+        varName: null,
+      },
+      {
+        type: 'query',
+        value: [
+          { type: 'vertex' },
+          { type: 'edge', varName: 'friendships', out: true, etype: 'friend' },
+        ],
+      },
+    ]
+  );
 });

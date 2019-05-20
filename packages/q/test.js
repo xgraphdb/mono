@@ -171,8 +171,13 @@ test('deep nested query', t => {
 const testQueryLength = (title, query, length) =>
   test(title, t => {
     const { g } = t.context;
-    const { results } = q(g, query);
-    t.is(results.length, length);
+    try {
+      const { results } = q(g, query);
+      t.is(results.length, length);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   });
 
 testQueryLength(
@@ -477,3 +482,10 @@ testQueryLength(
 `,
   0
 );
+
+testQueryLength('Complex multiple request', `
+CREATE VERTEX Person { name: 'foo' } AS foo1;
+CREATE VERTEX Person { name: 'bar' } AS bar1;
+CREATE EDGE friend FROM foo1 TO bar1;
+()-[results:friend]->;
+`, 3);

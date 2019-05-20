@@ -89,11 +89,10 @@ module.exports = function createXQPClient({
   port,
   requestTimeout = 30000,
 }) {
-  const conn = net.createConnection({
+  const connection = net.createConnection({
     host,
     port,
   });
-  const client = createRequester(conn, requestTimeout);
-  client.connection = conn;
-  return client;
+  const execute = createRequester(connection, requestTimeout);
+  return { connection, execute };
 };

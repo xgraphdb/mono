@@ -1,0 +1,24 @@
+{
+  "name": "@xgraph/db",
+  "version": "4.4.1",
+  "description": "XGraph DB server & client",
+  "main": "server.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xgraphdb/mono.git"
+  },
+  "author": "Alon Niv",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xgraphdb/mono/issues"
+  },
+  "homepage": "https://github.com/xgraphdb/mono#readme",
+  "dependencies": {
+    "@xgraph/xgraph": "^4.4.1",
+    "@xgraph/xqp": "^4.4.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

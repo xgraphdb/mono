@@ -1,9 +1,12 @@
 const { createXQPClient } = require('..');
 
 async function main() {
-  const request = createXQPClient({ port: 50644 });
-  const results = await Promise.all([request('hello'), request('foo')]);
+  const client = createXQPClient({ port: 50644 });
+  const results = await Promise.all([
+    client.execute('hello'),
+    client.execute('foo'),
+  ]);
   console.log(results);
-  request.connection.end();
+  client.connection.end();
 }
- main();
+main();
