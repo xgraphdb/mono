@@ -1,15 +1,15 @@
 {
   "name": "@xgraph/xgraph",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "description": "Multi featured graph library",
   "main": "index.js",
   "repository": "git@github.com:oakfang/xgraph.git",
   "author": "oakfang <oakfang@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@xgraph/core": "^4.3.0",
-    "@xgraph/q": "^4.3.0",
-    "@xgraph/tx": "^4.3.0",
+    "@xgraph/core": "^4.4.1",
+    "@xgraph/q": "^4.4.1",
+    "@xgraph/tx": "^4.4.1",
     "mkdirp": "^0.5.1",
     "uuid": "^3.3.2"
   },
