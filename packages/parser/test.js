@@ -261,11 +261,12 @@ test('Delete', t => {
   t.deepEquals(parse(`DELETE foo`), [{ type: 'delete', varName: 'foo' }]);
 });
 
-test('Multiple variable steps', t => {
+
+test('Multiple variable steps with comments', t => {
   t.deepEquals(
     parse(`
-  CREATE VERTEX Person { name: 'foo' } AS foo1;
-  CREATE VERTEX Person { name: 'bar' } AS bar1;
+  CREATE VERTEX Person { name: '//' } AS foo1;
+  // CREATE VERTEX Person { name: 'foo' } AS foo1;
   CREATE EDGE friend FROM foo1 TO bar1;
   ()-[friendships:friend]->;
   `),
@@ -276,21 +277,10 @@ test('Multiple variable steps', t => {
         payload: {
           vtype: 'Person',
           properties: {
-            name: 'foo',
+            name: '//',
           },
         },
         varName: 'foo1',
-      },
-      {
-        type: 'create',
-        entityType: 'vertex',
-        payload: {
-          vtype: 'Person',
-          properties: {
-            name: 'bar',
-          },
-        },
-        varName: 'bar1',
       },
       {
         type: 'create',

@@ -2,7 +2,7 @@
 const moo = require("moo");
 
 const lexer = moo.compile({
-    space: {match: /\s+/, lineBreaks: true},
+    space: {match: /(?:\s|\/\/(?:.*)?\n)+/, lineBreaks: true},
     number: /-?(?:[0-9]|[1-9][0-9]+)(?:\.[0-9]+)?(?:[eE][-+]?[0-9]+)?\b/,
     dstring: /"(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/,
     sstring: /'(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^'\\])*'/,
@@ -59,7 +59,7 @@ deleteEntity -> %del _ ident {% ([,, varName]) => ({
 
 createEntity -> createVertexStatement | createEdgeStatement
 
-createVertexStatement -> %createVertex %space ident _ json (alias):? {%
+createVertexStatement -> %createVertex ws ident _ json (alias):? {%
                             ([,, type,, props, alias]) => ({
                               type: 'create',
                               entityType: 'vertex',
@@ -71,7 +71,7 @@ createVertexStatement -> %createVertex %space ident _ json (alias):? {%
                             })
                           %}
 
-createEdgeStatement -> %createEdge %space ident _ (json _):? %from_ ident _ %to_ ident (alias):? {%
+createEdgeStatement -> %createEdge ws ident _ (json _):? %from_ ident _ %to_ ident (alias):? {%
                             ([,,etype,,props,,from_,,,to_, alias]) => {
                               props = props && props[0].value;
                               alias = alias && alias[0];
@@ -89,7 +89,7 @@ createEdgeStatement -> %createEdge %space ident _ (json _):? %from_ ident _ %to_
                             }
                           %}
 
-alias -> %space %as_ _ ident {% d => d.pop() %}
+alias -> ws %as_ _ ident {% d => d.pop() %}
 
 query -> vertex (_ edge (_ vertex):?):* {% extractQuery %}
 
@@ -214,7 +214,9 @@ key -> string {% id %}
      | jsIdentifier {% id %}
      | identifier {% id %}
 
-_ -> null | %space {% function(d) { return null; } %}
+_ -> null | ws {% id %}
+
+ws -> %space {% () => null %}
 
 term -> ";" {% () => null %}
 

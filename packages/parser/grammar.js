@@ -6,7 +6,7 @@ function id(x) { return x[0]; }
 const moo = require("moo");
 
 const lexer = moo.compile({
-    space: {match: /\s+/, lineBreaks: true},
+    space: {match: /(?:\s|\/\/(?:.*)?\n)+/, lineBreaks: true},
     number: /-?(?:[0-9]|[1-9][0-9]+)(?:\.[0-9]+)?(?:[eE][-+]?[0-9]+)?\b/,
     dstring: /"(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/,
     sstring: /'(?:\\["bfnrt\/\\]|\\u[a-fA-F0-9]{4}|[^'\\])*'/,
@@ -113,7 +113,7 @@ var grammar = {
     {"name": "createVertexStatement$ebnf$1$subexpression$1", "symbols": ["alias"]},
     {"name": "createVertexStatement$ebnf$1", "symbols": ["createVertexStatement$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "createVertexStatement$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "createVertexStatement", "symbols": [(lexer.has("createVertex") ? {type: "createVertex"} : createVertex), (lexer.has("space") ? {type: "space"} : space), "ident", "_", "json", "createVertexStatement$ebnf$1"], "postprocess": 
+    {"name": "createVertexStatement", "symbols": [(lexer.has("createVertex") ? {type: "createVertex"} : createVertex), "ws", "ident", "_", "json", "createVertexStatement$ebnf$1"], "postprocess": 
         ([,, type,, props, alias]) => ({
           type: 'create',
           entityType: 'vertex',
@@ -130,7 +130,7 @@ var grammar = {
     {"name": "createEdgeStatement$ebnf$2$subexpression$1", "symbols": ["alias"]},
     {"name": "createEdgeStatement$ebnf$2", "symbols": ["createEdgeStatement$ebnf$2$subexpression$1"], "postprocess": id},
     {"name": "createEdgeStatement$ebnf$2", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "createEdgeStatement", "symbols": [(lexer.has("createEdge") ? {type: "createEdge"} : createEdge), (lexer.has("space") ? {type: "space"} : space), "ident", "_", "createEdgeStatement$ebnf$1", (lexer.has("from_") ? {type: "from_"} : from_), "ident", "_", (lexer.has("to_") ? {type: "to_"} : to_), "ident", "createEdgeStatement$ebnf$2"], "postprocess": 
+    {"name": "createEdgeStatement", "symbols": [(lexer.has("createEdge") ? {type: "createEdge"} : createEdge), "ws", "ident", "_", "createEdgeStatement$ebnf$1", (lexer.has("from_") ? {type: "from_"} : from_), "ident", "_", (lexer.has("to_") ? {type: "to_"} : to_), "ident", "createEdgeStatement$ebnf$2"], "postprocess": 
         ([,,etype,,props,,from_,,,to_, alias]) => {
           props = props && props[0].value;
           alias = alias && alias[0];
@@ -147,7 +147,7 @@ var grammar = {
           }
         }
                                   },
-    {"name": "alias", "symbols": [(lexer.has("space") ? {type: "space"} : space), (lexer.has("as_") ? {type: "as_"} : as_), "_", "ident"], "postprocess": d => d.pop()},
+    {"name": "alias", "symbols": ["ws", (lexer.has("as_") ? {type: "as_"} : as_), "_", "ident"], "postprocess": d => d.pop()},
     {"name": "query$ebnf$1", "symbols": []},
     {"name": "query$ebnf$1$subexpression$1$ebnf$1$subexpression$1", "symbols": ["_", "vertex"]},
     {"name": "query$ebnf$1$subexpression$1$ebnf$1", "symbols": ["query$ebnf$1$subexpression$1$ebnf$1$subexpression$1"], "postprocess": id},
@@ -299,7 +299,8 @@ var grammar = {
     {"name": "key", "symbols": ["jsIdentifier"], "postprocess": id},
     {"name": "key", "symbols": ["identifier"], "postprocess": id},
     {"name": "_", "symbols": []},
-    {"name": "_", "symbols": [(lexer.has("space") ? {type: "space"} : space)], "postprocess": function(d) { return null; }},
+    {"name": "_", "symbols": ["ws"], "postprocess": id},
+    {"name": "ws", "symbols": [(lexer.has("space") ? {type: "space"} : space)], "postprocess": () => null},
     {"name": "term", "symbols": [{"literal":";"}], "postprocess": () => null}
 ]
   , ParserStart: "script"
