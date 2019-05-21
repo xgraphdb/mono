@@ -1,6 +1,6 @@
 {
   "name": "@xgraph/tx",
-  "version": "4.4.1",
+  "version": "5.0.0",
   "description": "Isolated Transactions for the @xgraph/core graph",
   "main": "index.js",
   "repository": "git@github.com:oakfang/graph-tx.git",
@@ -10,7 +10,7 @@
     "test": "nyc node test"
   },
   "devDependencies": {
-    "@xgraph/core": "^4.4.1",
+    "@xgraph/core": "^5.0.0",
     "nefarious": "^3.1.0",
     "nyc": "^13.3.0"
   },
