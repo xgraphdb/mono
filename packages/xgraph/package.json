@@ -3,9 +3,16 @@
   "version": "5.0.1",
   "description": "Multi featured graph library",
   "main": "index.js",
-  "repository": "git@github.com:oakfang/xgraph.git",
-  "author": "oakfang <oakfang@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xgraphdb/mono.git"
+  },
+  "author": "Alon Niv",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xgraphdb/mono/issues"
+  },
+  "homepage": "https://github.com/xgraphdb/mono#readme",
   "dependencies": {
     "@xgraph/core": "^5.0.0",
     "@xgraph/q": "^5.0.1",

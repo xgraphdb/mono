@@ -3,9 +3,16 @@
   "version": "5.0.1",
   "description": "Isolated Transactions for the @xgraph/core graph",
   "main": "index.js",
-  "repository": "git@github.com:oakfang/graph-tx.git",
-  "author": "oakfang <oakfang@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xgraphdb/mono.git"
+  },
+  "author": "Alon Niv",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xgraphdb/mono/issues"
+  },
+  "homepage": "https://github.com/xgraphdb/mono#readme",
   "scripts": {
     "test": "nyc node test"
   },
