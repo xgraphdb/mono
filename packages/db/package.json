@@ -1,6 +1,6 @@
 {
   "name": "@xgraph/db",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "XGraph DB server & client",
   "main": "server.js",
   "scripts": {},
