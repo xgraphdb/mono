@@ -1,6 +1,6 @@
 {
   "name": "@xgraph/db",
-  "version": "5.0.2",
+  "version": "5.1.0",
   "description": "XGraph DB server & client",
   "main": "server.js",
   "scripts": {},
@@ -15,7 +15,7 @@
   },
   "homepage": "https://github.com/xgraphdb/mono#readme",
   "dependencies": {
-    "@xgraph/xgraph": "^5.0.1",
+    "@xgraph/xgraph": "^5.1.0",
     "@xgraph/xqp": "^5.0.0",
     "yargs": "^13.2.4"
   },
