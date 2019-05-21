@@ -1,9 +1,10 @@
 const cluster = require('cluster');
+const path = require('path');
 const { createXQPServer } = require('@xgraph/xqp');
 
 module.exports = function startXGraphDBServer({ port, dbPath }) {
   cluster.setupMaster({
-    exec: 'worker.js',
+    exec: path.resolve(__dirname, 'worker.js'),
   });
   const worker = cluster.fork();
   const pending = new Map();
