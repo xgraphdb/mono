@@ -16,9 +16,14 @@
   "homepage": "https://github.com/xgraphdb/mono#readme",
   "dependencies": {
     "@xgraph/xgraph": "^4.4.1",
-    "@xgraph/xqp": "^4.4.1"
+    "@xgraph/xqp": "^4.4.1",
+    "yargs": "^13.2.4"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "bin": {
+    "xdb": "bin/xdb.js",
+    "xdbc": "bin/xdb-client.js"
   }
 }

@@ -1,8 +1,7 @@
 const cluster = require('cluster');
 const { createXQPServer } = require('@xgraph/xqp');
-const { PORT } = require('./common');
 
-module.exports = function startXGraphDBServer({ port = PORT, dbPath }) {
+module.exports = function startXGraphDBServer({ port, dbPath }) {
   cluster.setupMaster({
     exec: 'worker.js',
   });
@@ -20,6 +19,10 @@ module.exports = function startXGraphDBServer({ port = PORT, dbPath }) {
           worker.send({ type: 'REQUEST', request, msgId });
         });
       })
+        .on('connection', conn => {
+          console.log('Connection created');
+          conn.once('close', () => console.log('Connection left'));
+        })
         .once('listening', () => console.log(`XDB listening on port ${port}`))
         .listen(port);
     })
