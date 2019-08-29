@@ -58,9 +58,9 @@ g.edge('foo', 'bar', 'friendOf').type === 'friends';
 g.edge('foo', 'bar', 'father') === null;
 ```
 
-### Graph::hasEdge(originVertexId:string, targetVertexId:string, type:string)
+### Graph::hasEdge(originVertexId:string, targetVertexId:string, type?:string)
 
-Check if a `type` edge from `origin` to `target` exists.
+Check if an edge from `origin` to `target` exists (specifically of type `type`, if given).
 
 ```js
 g.hasEdge('foo', 'bar', 'friendOf') === true;
@@ -94,9 +94,9 @@ An `iterator` over all the graph's vertices of a given `type`, filtering using [
 
 An `iterator` over all the graph's vertices, filtering using [monjo](https://github.com/oakfang/monjo) syntax, using Indices where possible.
 
-*Note:* Using the unIndexed monjo version for all vertices will, inevitaly, be slower than simply using `graph.vertices().filter(...)` instead.
+_Note:_ Using the unIndexed monjo version for all vertices will, inevitaly, be slower than simply using `graph.vertices().filter(...)` instead.
 
-*Note:* Using the `type` parameter is syntactic sugar for querying the `Graph.TYPE` auto Index, which means that using it with an Index (and especially a Typed Index) will incur an Index Intersection performance penalty.
+_Note:_ Using the `type` parameter is syntactic sugar for querying the `Graph.TYPE` auto Index, which means that using it with an Index (and especially a Typed Index) will incur an Index Intersection performance penalty.
 
 ### Graph::toObject(), Graph.fromObject(bareObject)
 

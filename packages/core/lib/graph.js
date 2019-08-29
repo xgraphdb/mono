@@ -157,7 +157,7 @@ class Graph {
     }
   }
 
-  edge(origin, target, type) {
+  _getEdgesBetween(origin, target) {
     const vOrigin = this.vertex(origin);
     const vTarget = this.vertex(target);
     if (!vOrigin || !vTarget) return;
@@ -165,13 +165,26 @@ class Graph {
     const fromEdges = this._from.get(vOrigin);
     if (!fromEdges.has(vTarget)) return null;
     const toEdges = fromEdges.get(vTarget);
-    if (!toEdges[type]) return null;
+    return toEdges;
+  }
+
+  edge(origin, target, type) {
+    const toEdges = this._getEdgesBetween(origin, target);
+    const vOrigin = this.vertex(origin);
+    const vTarget = this.vertex(target);
+    if (!toEdges || !toEdges[type]) return null;
     const properties = toEdges[type];
     return { origin: vOrigin, target: vTarget, type, properties };
   }
 
   hasEdge(origin, target, type) {
-    return this.edge(origin, target, type) ? true : false;
+    const toEdges = this._getEdgesBetween(origin, target);
+    if (!toEdges) {
+      return false;
+    } else if (type === undefined) {
+      return true;
+    }
+    return !!toEdges[type];
   }
 
   *_outEdges(origin) {

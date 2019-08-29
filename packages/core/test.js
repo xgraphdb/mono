@@ -43,6 +43,9 @@ test('has edge', t => {
   t.is(g.hasEdge('foo', 'bar', 'friend'), true);
   t.is(g.hasEdge('foo', 'bar', 'hates'), false);
   t.is(g.hasEdge('foo', 'barzor', 'hates'), false);
+  t.is(g.hasEdge('bar', 'foo'), true);
+  g.removeEdge('bar', 'foo', 'friend');
+  t.is(g.hasEdge('bar', 'foo'), false);
 });
 
 test('get edge', t => {
