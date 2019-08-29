@@ -1,6 +1,6 @@
 {
   "name": "@xgraph/tx",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "description": "Isolated Transactions for the @xgraph/core graph",
   "main": "index.js",
   "repository": {
@@ -21,7 +21,7 @@
     "nyc": "^13.3.0"
   },
   "dependencies": {
-    "@xgraph/core": "^5.1.0"
+    "@xgraph/core": "^5.2.0"
   },
   "publishConfig": {
     "access": "public"

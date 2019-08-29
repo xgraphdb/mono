@@ -1,6 +1,6 @@
 {
   "name": "@xgraph/core",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "description": "A powerful and flexible graph structure for JS",
   "main": "index.js",
   "scripts": {
