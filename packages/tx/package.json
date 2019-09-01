@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "nefarious": "^3.1.0",
-    "nyc": "^13.3.0"
+    "nyc": "^14.1.1"
   },
   "dependencies": {
     "@xgraph/core": "^5.2.0"

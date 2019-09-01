@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/xgraphdb/mono#readme",
   "dependencies": {
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "moo": "^0.5.0",
     "nearley": "^2.16.0"
   },
