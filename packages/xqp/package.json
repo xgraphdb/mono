@@ -1,6 +1,6 @@
 {
   "name": "@xgraph/xqp",
-  "version": "5.0.0",
+  "version": "5.2.1",
   "description": "XGraph Query Protocol",
   "main": "index.js",
   "scripts": {},

@@ -1,6 +1,6 @@
 {
   "name": "@xgraph/xgraph",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "Multi featured graph library",
   "main": "index.js",
   "repository": {
@@ -14,9 +14,9 @@
   },
   "homepage": "https://github.com/xgraphdb/mono#readme",
   "dependencies": {
-    "@xgraph/core": "^5.2.0",
-    "@xgraph/q": "^5.2.0",
-    "@xgraph/tx": "^5.2.0",
+    "@xgraph/core": "^5.2.1",
+    "@xgraph/q": "^5.2.1",
+    "@xgraph/tx": "^5.2.1",
     "mkdirp": "^0.5.1",
     "msgpack-lite": "^0.1.26",
     "uuid": "^3.3.2"
