@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/xgraphdb/mono#readme",
   "devDependencies": {
-    "lerna": "^3.13.4",
-    "lerna-wizard": "^1.0.9"
+    "lerna": "^3.16.4"
   }
 }
