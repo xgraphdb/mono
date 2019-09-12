@@ -261,6 +261,44 @@ test('Delete', t => {
   t.deepEquals(parse(`DELETE foo`), [{ type: 'delete', varName: 'foo' }]);
 });
 
+test('Parse with mutation', t => {
+  const s = `({ users, friendships }) => {
+      const friends = friendships.reduce(
+        (map, { origin, properties }) => ({
+          ...map,
+          [origin.id]: properties
+        }),
+        {}
+      );
+      return users.map(user =>
+        friends[user.id]
+          ? {
+              ...user,
+              friendship: friends[user.id]
+            }
+          : user
+      );
+    }
+  `;
+  t.deepEquals(
+    parse(`
+    (users:User)-[friendships:friend]->;
+    RETURN ${s}`),
+    [
+      {
+        type: 'query',
+        value: [
+          { type: 'vertex', varName: 'users', vtype: 'User' },
+          { type: 'edge', varName: 'friendships', out: true, etype: 'friend' },
+        ],
+      },
+      {
+        type: 'return',
+        script: s,
+      },
+    ]
+  );
+});
 
 test('Multiple variable steps with comments', t => {
   t.deepEquals(

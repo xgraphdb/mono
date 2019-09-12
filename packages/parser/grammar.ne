@@ -21,6 +21,7 @@ const lexer = moo.compile({
     true: 'true',
     false: 'false',
     null: 'null',
+    mutate: /(?:RETURN)|(?:return)/,
     createVertex: /(?:CREATE\s+VERTEX)|(?:create\s+vertex)/,
     createEdge: /(?:CREATE\s+EDGE)|(?:create\s+edge)/,
     update: /(?:(?:UPDATE)|(?:update))\s/,
@@ -45,6 +46,11 @@ command -> query
          | createEntity
          | updateFragment
          | deleteEntity
+         | mutateQuery
+
+mutateQuery -> %mutate {% () => ({
+  type: 'return',
+}) %}
 
 updateFragment -> %update _ ident _ json {% ([,, varName,,{ value }]) => ({
   type: 'update',

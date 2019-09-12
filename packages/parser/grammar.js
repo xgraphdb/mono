@@ -25,6 +25,7 @@ const lexer = moo.compile({
     true: 'true',
     false: 'false',
     null: 'null',
+    mutate: /(?:RETURN)|(?:return)/,
     createVertex: /(?:CREATE\s+VERTEX)|(?:create\s+vertex)/,
     createEdge: /(?:CREATE\s+EDGE)|(?:create\s+edge)/,
     update: /(?:(?:UPDATE)|(?:update))\s/,
@@ -99,6 +100,10 @@ var grammar = {
     {"name": "command", "symbols": ["createEntity"]},
     {"name": "command", "symbols": ["updateFragment"]},
     {"name": "command", "symbols": ["deleteEntity"]},
+    {"name": "command", "symbols": ["mutateQuery"]},
+    {"name": "mutateQuery", "symbols": [(lexer.has("mutate") ? {type: "mutate"} : mutate)], "postprocess":  () => ({
+          type: 'return',
+        }) },
     {"name": "updateFragment", "symbols": [(lexer.has("update") ? {type: "update"} : update), "_", "ident", "_", "json"], "postprocess":  ([,, varName,,{ value }]) => ({
           type: 'update',
           varName,
