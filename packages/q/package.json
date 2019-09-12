@@ -1,6 +1,6 @@
 {
   "name": "@xgraph/q",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "description": "Query @xgraph/core graphs",
   "main": "index.js",
   "repository": {
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@xgraph/core": "^5.2.1",
-    "@xgraph/parser": "^5.2.1",
+    "@xgraph/parser": "^5.2.2",
     "monjo": "^1.0.0",
     "xype": "^4.0.0"
   },

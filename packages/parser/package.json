@@ -1,6 +1,6 @@
 {
   "name": "@xgraph/parser",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "description": "XGraph parser",
   "main": "index.js",
   "scripts": {
