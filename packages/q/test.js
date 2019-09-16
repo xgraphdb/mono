@@ -483,9 +483,31 @@ testQueryLength(
   0
 );
 
-testQueryLength('Complex multiple request', `
+testQueryLength(
+  'Complex multiple request',
+  `
 CREATE VERTEX Person { name: 'foo' } AS foo1;
 CREATE VERTEX Person { name: 'bar' } AS bar1;
 CREATE EDGE friend FROM foo1 TO bar1;
 ()-[results:friend]->;
-`, 3);
+`,
+  3
+);
+
+test('Mutating the queries', t => {
+  const results = q(t.context.g)`
+  (people:Person)-[friends:friend]->;
+  RETURN ({ people, friends }) => {
+    const friendships = friends.reduce((map, { origin, target }) => {
+      if (!map[origin.id]) {
+        map[origin.id] = [];
+      }
+      map[origin.id].push(target);
+      return map;
+    }, {});
+    return people.map(p => ({ ...p, friends: friendships[p.id] }));
+  };
+  `;
+  t.is(results[0].friends[0].id, 'bar');
+  t.is(results[1].friends[0].id, 'foo');
+});

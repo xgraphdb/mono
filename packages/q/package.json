@@ -14,14 +14,15 @@
   },
   "homepage": "https://github.com/xgraphdb/mono#readme",
   "devDependencies": {
-    "@xgraph/core": "^5.0.0",
+    "@xgraph/core": "^5.2.1",
     "nefarious": "^3.1.0",
     "nyc": "^14.1.1"
   },
   "dependencies": {
     "@xgraph/core": "^5.2.1",
     "@xgraph/parser": "^5.2.2",
-    "monjo": "^1.0.0",
+    "monjo": "^1.2.1",
+    "virdo": "^1.2.0",
     "xype": "^4.0.0"
   },
   "scripts": {

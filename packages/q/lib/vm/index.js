@@ -2,8 +2,9 @@ const query = require('./query');
 const create = require('./create');
 const update = require('./update');
 const delete_ = require('./delete');
+const return_ = require('./return');
 
-const commands = { query, create, update, delete: delete_ };
+const commands = { query, create, update, delete: delete_, return: return_ };
 
 module.exports = function run(
   graph,
@@ -14,7 +15,10 @@ module.exports = function run(
 ) {
   const commandFn = commands[command.type];
   if (commandFn) {
-    commandFn(graph, command, state, results, debug);
+    const value = commandFn(graph, command, state, results, debug);
+    if (commandFn === return_) {
+      return value;
+    }
   }
   return results;
 };
